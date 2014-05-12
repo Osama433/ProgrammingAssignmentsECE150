@@ -1,0 +1,41 @@
+// Class CarList defines a singly linked list of Car objects.
+// This fragment defines the private type holding entries on the linked list.
+
+partial class CarList
+{
+    // Class CarListEntry defines the objects which are linked together
+    // to form the CarList.  Each one refers to its successor on the list
+    // and exists to hold a reference to its particular Car object.  Note
+    // that it is private to the CarList class, so a user of the CarList
+    // class won't be able to manipulate CarListEntry objects directly.
+    
+    class CarListEntry
+    {
+        CarListEntry next;  // refer to next element in linked list
+        readonly Car data;  // refer to data held by this element in linked list
+        
+        // Constructor attaches the Car data but leaves element unlinked.
+        
+        public CarListEntry( Car data )
+        {
+            this.next = null;
+            this.data = data;
+        }
+        
+        // Property Next allows get/set of reference to next element.
+        
+        public CarListEntry Next { get { return next; } set { next = value; } }
+        
+        // Property Data allows get of Car data held by this element.
+        
+        public Car Data { get { return data; } }
+        
+        // Method ToString returns a representation of the Car data held
+        // by this element.
+        
+        public override string ToString( )
+        {
+            return data.ToString( );
+        }
+    }
+}

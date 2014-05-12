@@ -1,0 +1,268 @@
+using System;
+using System.IO;
+
+// Class CarList defines a singly linked list of Car objects.
+// This fragment defines the methods related to its use as a list of Cars.
+
+partial class CarList
+{
+    // Fields of the CarList class must remain consistent.  There are
+    // no elements on the linked list prior to the one indicated by head.
+    // There are no elements on the linked list after the one indicated
+    // by tail.  Length is the number of linked elements.
+    
+    CarListEntry head;  // First element
+    CarListEntry tail;  // Last element
+    int length;  // Number of elments
+    
+    // Constructor initializes list as empty.
+    public CarList( ) { Clear( ); }
+    
+    // Method Clear empties a list.
+    
+    // Property Count allows get of number of elements in the list.
+    
+    public int Count { get { return length; } }
+    
+    public void Clear( )
+    {
+        head = null;
+        tail = null;
+        length = 0;
+    }
+    
+	// This method adds a new element with the specified Car data to the front 
+	// of the  linked list and the length of the list is also updated.
+	
+    public void Prepend( Car data )
+    {
+		if( data == null ) return; // If the data to be added is null
+								   // method is ended
+								  
+        CarListEntry temp = head; 
+		head = new CarListEntry( data ); // Head is assigned the new element 
+		head.Next = temp; // the new head points to the previous head
+		length ++;
+	}
+    
+    // Method Append adds a new element with the specified Car data
+    // to the end of the linked list.
+    
+    public void Append( Car data )
+    {
+        if( data == null ) return;
+        CarListEntry temp = new CarListEntry( data );
+        if( length == 0 ) head = temp; else tail.Next = temp;
+        tail = temp;
+        length ++;
+    }
+    
+    // Method RemoveAtHead deletes the element at the beginning of the
+    // linked list, returning its attached Car data.
+    
+    public Car RemoveAtHead( )
+    {
+        if( length == 0 ) return null;
+        CarListEntry result = head;
+        head = head.Next;
+        if( head == null ) tail = null;
+        result.Next = null;
+        length --;
+        return result.Data;
+    }
+  
+	// This method removes the last element on the linked list and returns the 
+	// Car data attached to the removed element.
+	
+     public Car RemoveAtTail( )
+    {
+		
+		if( length == 0 ) return null; // if the length of the list is 0,nothing 
+									   // is removed and the method ends.
+		CarListEntry current= head;    // current looks at the 
+									   // element of interest
+		CarListEntry remove;           // Data that is remove
+		
+		// The list is emptied if it only has one element
+		if (length == 1)
+		{
+			head= null;
+			tail= null;
+			length--;
+			remove= current;
+			current= null;
+			return remove.Data;
+		}
+		// if the list has 2 elements it is left with only 1 element which 
+		// is the head and the tail
+		else if (length==2)
+		{
+			tail = head; 
+			length --;
+			remove= current.Next;
+			current.Next= null;
+			return remove.Data;	
+		}
+		// if the list has more then 2 elements then the head
+		// and tail are different
+		else{
+			while ( current.Next !=tail)
+			{
+				current = current.Next ;
+			}
+			tail = current;
+			length --;
+			remove = current.Next;
+			current.Next=null;
+			return remove.Data;
+		}
+		
+    }
+	
+    public void DeleteAll( Car.Colours colour )
+    {
+		Car [] result =  ToArray(); // New array of type Car that stores the  
+									// data of each car is created, using 
+									// To Array method.
+		
+		// This for loop goes through all the elements in the result array.
+		for (int x =0; x < result.Length ; x++)
+		{
+			// This if statement checks whether the colour of car in the result 
+			// array matches with the colour passed as a parameter. If the 
+			// condition is met, the car with that colour is given a value of 
+			// null
+			if (result[x].Colour== colour )
+			{
+				result[x]= null;
+			}
+		}
+		CarList car = FromArray(result); // The updated result array is then  
+										 // sent to FromArray method.	
+		// the current list gets the head, tail and the length of the list 
+		// created by from array 
+		head= car.head;  
+		tail= car.tail;
+		length = car.Count;
+    }
+    
+    // Method ToArray creates an array of references to the Car objects
+    // held on the linked list.
+    public Car[ ] ToArray( )
+    {
+        Car[ ] result = new Car[ length ];
+        CarListEntry current = head;
+        for( int i = 0; i < length; i ++ )
+        {
+            result[ i ] = current.Data;
+            current = current.Next;
+        }
+        return result;
+    }
+    
+	// In this method, the new array with changes from DeleteAll method is 
+	// converted into a list and returned.
+	
+    public static CarList FromArray( Car[ ] cars )
+    {
+		if(cars.Length==0) return null; // if the length of the array is 0, 
+										// nothing is returned.
+									
+	    CarList result = new CarList(); // New list of type CarList is created.
+	
+		// This for loop goes through all the elements of the cars array and 
+		//	adds all the car data to the result list.
+		
+		for( int i = 0; i < cars.Length; i ++ )
+        {
+			// This if statement makes sure that no null elements are added 
+			// to the list
+			
+			if ( cars[i] !=null)
+			{
+				result.Append(cars[i]);				
+			}
+        }
+        return result;
+	}
+}
+
+// Class CarListTest exercises the methods of the CarList class to give
+// some confidence that these function correctly.
+
+static class CarListTest
+{
+    static void Main( )
+    {
+        Console.WriteLine( "New List" );
+        CarList myCars = new CarList( );
+        Console.WriteLine( "myCars.Count={0}", myCars.Count );
+        foreach( Car c in myCars ) Console.WriteLine( "c={0}", c );
+        
+        // This 'using' statement is equivalent to a 'try-finally' statement
+        // where the 'finally' part ensures the file is closed.  It may not
+        // have been discussed in class.
+        
+        using( StreamReader sr = new StreamReader( "carInventory.txt" ) )
+        {
+            Console.WriteLine( );
+            Console.WriteLine( "Append" );
+            myCars.Append( Car.Parse( sr.ReadLine( ) ) );
+            Console.WriteLine( "myCars.Count={0}", myCars.Count );
+            foreach( Car c in myCars ) Console.WriteLine( "c={0}", c );
+            
+            Console.WriteLine( );
+            Console.WriteLine( "Append" );
+            myCars.Append( Car.Parse( sr.ReadLine( ) ) );
+            Console.WriteLine( "myCars.Count={0}", myCars.Count );
+            foreach( Car c in myCars ) Console.WriteLine( "c={0}", c );
+            
+            Console.WriteLine( );
+            Console.WriteLine( "RemoveAtHead" );
+            myCars.RemoveAtHead( );
+            Console.WriteLine( "myCars.Count={0}", myCars.Count );
+            foreach( Car c in myCars ) Console.WriteLine( "c={0}", c );
+            
+            Console.WriteLine( );
+            Console.WriteLine( "RemoveAtHead" );
+            myCars.RemoveAtHead( );
+            Console.WriteLine( "myCars.Count={0}", myCars.Count );
+            foreach( Car c in myCars ) Console.WriteLine( "c={0}", c );
+            
+            Console.WriteLine( );
+            Console.WriteLine( "RemoveAtHead" );
+            myCars.RemoveAtHead( );
+            Console.WriteLine( "myCars.Count={0}", myCars.Count );
+            foreach( Car c in myCars ) Console.WriteLine( "c={0}", c );
+            
+            Console.WriteLine( );
+            Console.WriteLine( "Append a few" );
+            myCars.Append( Car.Parse( sr.ReadLine( ) ) );
+            myCars.Append( Car.Parse( sr.ReadLine( ) ) );
+            myCars.Append( Car.Parse( sr.ReadLine( ) ) );
+            myCars.Append( Car.Parse( sr.ReadLine( ) ) );
+            myCars.Append( Car.Parse( sr.ReadLine( ) ) );
+            myCars.Append( Car.Parse( sr.ReadLine( ) ) );
+            myCars.Append( Car.Parse( sr.ReadLine( ) ) );
+            myCars.Append( Car.Parse( sr.ReadLine( ) ) );
+            myCars.Append( Car.Parse( sr.ReadLine( ) ) );
+            myCars.Append( Car.Parse( sr.ReadLine( ) ) );
+            myCars.Append( Car.Parse( sr.ReadLine( ) ) );
+            myCars.Append( Car.Parse( sr.ReadLine( ) ) );
+            Console.WriteLine( "myCars.Count={0}", myCars.Count );
+            foreach( Car c in myCars ) Console.WriteLine( "c={0}", c );
+            
+            Console.WriteLine( );
+            Console.WriteLine( "ToArray" );
+            Car[ ] test = myCars.ToArray( );
+            Console.WriteLine( "test.Length={0}", test.Length );
+            for( int i = 0; i < test.Length; i ++ )
+            {
+                Console.WriteLine( "test[{0}]={1}", i, test[ i ] );
+            }
+			    
+
+        }
+		
+    }
+}

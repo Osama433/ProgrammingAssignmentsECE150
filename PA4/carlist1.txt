@@ -1,0 +1,87 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+
+// Class CarList defines a singly linked list of Car objects.
+// This fragment defines the pieces related to enumeration and foreach loops.
+// You are not required to understand this fragment of class CarList.
+
+partial class CarList : IEnumerable< Car >
+{
+    // Methods GetEnumerator and IEnumerable.GetEnumerator implement
+    // the IEnumerable interface, part of enabling the foreach loop
+    // on the CarList class.  You are not required to understand this
+    // part of the code.
+    
+    public IEnumerator< Car > GetEnumerator( )
+    {
+        return new CarListEnumerator( head );
+    }
+    IEnumerator IEnumerable.GetEnumerator( ) { return GetEnumerator( ); }
+    
+    // Class CarListEnumerator implements the IEnumerator interface,
+    // part of enabling the foreach loop on the CarList class.  You
+    // are not required to understand this part of the code.
+    
+    class CarListEnumerator : IEnumerator< Car >
+    {
+        CarListEntry head;  // first element on the linked list
+        CarListEntry current;  // current element on the linked list
+        bool isReset;  // true if current is 'before' the first element
+        
+        // Constructor initializes a copy of the head of the linked
+        // list.  The enumerator is reset and there is no current element.
+        
+        public CarListEnumerator( CarListEntry head )
+        {
+            this.head = head;
+            current = null;
+            isReset = true;
+        }
+        
+        // Methods Current and IEnumerator.Current return the car on the 
+        // current element or throw and exception if this is not possible.
+        
+        public Car Current 
+        { 
+            get 
+            { 
+                if( current == null || isReset )
+                    throw new InvalidOperationException( );
+                return current.Data; 
+            } 
+        }
+        object IEnumerator.Current { get { return Current; } }
+        
+        // Method MoveNext advances the current element.
+        
+        public bool MoveNext( )
+        {
+            if( isReset ) 
+            {
+                current = head; 
+                isReset = false;
+            }
+            else if( current != null ) 
+            {
+                current = current.Next;
+            }
+            return current != null;
+        }
+        
+        // Method Reset returns to the beginning of the list, that is,
+        // there is no current element and the enumerator is reset.
+        
+        public void Reset( ) 
+        { 
+            current = null; 
+            isReset = true;
+        }
+        
+        // Method Dispose cleans up any resources used by the
+        // enumerator.  Although the method is required, here there is
+        // nothing to clean up so the body is left empty.
+        
+        public void Dispose( ) { }
+    }
+}

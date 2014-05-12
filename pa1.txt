@@ -1,0 +1,47 @@
+// -------------------------------------------------------------------	
+// Department of Electrical and Computer Engineering
+// University of Waterloo
+//
+// Student Name:     Osama Tariq
+// Userid:           o2tariq  
+//
+// Assignment:       Programming Assingment
+// Submission Date:  <28/9/2012>
+// 
+// I declare that, other than the acknowledgements listed below, 
+// this program is my original work.
+//
+// Acknowledgements:
+// N/A
+// -------------------------------------------------------------------
+using System;
+
+    class pa1
+    {
+		static void Main()
+		{
+			double P; // The orbital Period in Days 
+			double a ; //the semi-major axis of the orbit in metres
+			double G=6.67*Math.Pow(10,-11);//Newton's Gravitational Constant
+			double M=1.99*Math.Pow(10,30); //Mass of the Sun in Kilograms
+			double days=365.256; //An Earth year in days 
+			double Pd; // The orbital Period in Seconds
+			String input; // Input is stored in this variable
+			
+			Console.WriteLine(
+			"PA1: Calculating the Period of Orbit for Planets\n" +
+			"--------------------------------------------------");
+			Console.Write("Enter the semi-major axis <a> in metres: ");
+			//Gets the value of the semi-major axis of orbit from the user and
+			//stores it in a String
+			input = Console.ReadLine();
+			a= double.Parse(input);//Converts the String input into a double
+			// This formula determines the Orbital Period in seconds
+			Pd= Math.Sqrt(((4*Math.Pow(Math.PI,2)*Math.Pow(a,3))/(G*M))); 
+			P= Pd/days/24/60/60; //Converts Period from seconds to days 
+			Console.WriteLine("The Orbital Period is: {0:F2}s",Pd);
+			Console.WriteLine("The Orbital Period is: {0:F2} years",P);
+
+			
+		}
+	}

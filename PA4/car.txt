@@ -1,0 +1,91 @@
+using System;
+
+// Class Car defines the information associated with a car.
+
+class Car
+{
+    // Type Colours defines the allowed car colours as an enumeration.
+    
+    public enum Colours
+        { White, Grey, Black, Red, Orange, Yellow, Green, Blue, Violet }
+
+    readonly int id;  // Arbitrary id number unique to each car
+    readonly string make;  // Maker of the car
+    readonly string model;  // The car-maker's model of car
+    readonly int year;  // The car-maker's model year for the car
+    readonly Colours colour;  // The car's body colour
+    readonly double price;  // The car dealer's list price
+
+    // Constructor initializes all fields of the car object as
+    // passed in the parameters.  No error checking is done.
+    
+    public Car( int id, string make, string model, int year, 
+        Colours colour, double price )
+    {
+        this.id = id;
+        this.make = make;
+        this.model = model;
+        this.year = year;
+        this.colour = colour;
+        this.price = price;
+    }
+    
+    // Properties Id, Make, Model, Year, Colour, Price provide
+    // get access to the car fields.
+    
+    public int Id { get { return id; } }
+    public string Make { get { return make; } }
+    public string Model { get { return model; } }
+    public int Year { get { return year; } }
+    public Colours Colour { get { return colour; } }
+    public double Price { get { return price; } }
+
+    // Method ToString represents a car in the same form as could
+    // be parsed by the Parse method.
+    
+    public override string ToString()
+    {
+        return string.Format( 
+            "{0};{1};{2};{3};{4};${5:n2}",
+            id, make, model, year, colour, price );
+    }
+    
+    // Method Parse constructs a Car object from a string representation
+    // such as produced by ToString.
+    
+    public static Car Parse( string line )
+    {
+        if( line == null ) throw new FormatException( );
+        string[ ] fields = line.Split( ';' );
+        if( fields.Length != 6 ) throw new FormatException( );
+        int id = int.Parse( fields[ 0 ] );
+        string make = fields[ 1 ];
+        string model = fields[ 2 ];
+        int year = int.Parse( fields[ 3 ] );
+        Colours colour = (Colours) Enum.Parse( typeof( Colours ), fields[ 4 ] );
+        double price = double.Parse( fields[ 5 ].Trim( '$' ) );
+        return new Car( id, make, model, year, colour, price );
+    }
+}
+
+// Class CarTest exercises the methods of the Car class to give some
+// confidence that these are functioning correctly.
+
+static class CarTest
+{
+    static void Main( )
+    {
+        Car[ ] myCars = new Car[ 5 ];
+        
+        myCars[ 0 ] = Car.Parse( "1000;Ford;Mustang;1983;Black;$10,000.00" );
+        myCars[ 1 ] = Car.Parse( "2000;Ford;Mustang;1984;Red;$19,800.00" );
+        myCars[ 2 ] = Car.Parse( "2025;Toyota;4-Runner;1995;Green;$25,000.00" );
+        myCars[ 3 ] = Car.Parse( "3636;Nissan;Sentra;2001;Red;$23,500.00" );
+        myCars[ 4 ] = Car.Parse( "12345;Infiniti;G25;2011;Grey;$40,000.00" );
+        
+        for( int i = 0; i < myCars.Length; i ++ )
+        {
+            Console.WriteLine( "myCars[{0}]={1}", i, myCars[ i ] );
+        }
+    }
+}

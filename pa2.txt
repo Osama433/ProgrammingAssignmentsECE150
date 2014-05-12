@@ -1,0 +1,148 @@
+// -------------------------------------------------------------------	
+// Department of Electrical and Computer Engineering
+// University of Waterloo
+//
+// Student Name:     Osama Tariq	
+// Userid:           20480177
+//
+// Assignment:       Programming Assignment 2 - Fall 2012
+// Submission Date:  12/10/2012
+// 
+// I declare that, other than the acknowledgements listed below, 
+// this program is my original work.	
+//
+// Acknowledgements:
+// <INSERT AN ITEMIZED LIST OF ACKNOWLEDGEMENTS IF APPLICABLE>
+// -------------------------------------------------------------------
+
+using System;
+
+// The range class has three fields, the startValue, endValue and deltaValue.
+// This class includes a constructor which stores values in the field, if they
+// are valid, a sum method that returns the sum of the range, a product property
+// that returns the product of the range, and it overrides the ToString method.
+class Range
+{
+    
+    private double startValue;// The Starting value of the range
+	 
+	private double endValue;//The ending value for a range
+	  
+	private double deltaValue;//the delta value for a range
+	
+	
+
+    // This is the constructor for the Range class.  The constructor accepts 
+	// three arguments.The sV parameter represents the startValue of the 
+    // range.  The eV parameter represents the endValue of the range.  
+    // The dV parameter represents the deltaValue of the range.  The 
+    // constructor checks if the deltaValue is valid for the range.  
+    // If not, an ArgumentException should be thrown. 
+    public Range(double sV, double eV, double dV)
+    {
+        startValue= sV;
+		endValue=eV;
+		if (dV!=0&&((eV-sV)/dV)>=0)
+		{
+		deltaValue=dV;
+		}else
+		{
+		throw new ArgumentException("Invalid delta value");
+		}
+	}
+
+    // This is a method that accepts no arguments and returns the
+    // sum of the values specified by the range as a double-precision,
+    // floating-point value.
+    public double Sum()
+    {
+        double sum=0;
+		if (deltaValue>0) 
+		{
+			for(double x=startValue; x<=endValue; x+=deltaValue)
+			{
+				sum= sum+x;
+			}
+		}else if(deltaValue<0)
+		{
+			for(double x=startValue; x>=endValue; x+=deltaValue)
+			{
+				sum= sum+x;
+			}
+		}
+		return sum;
+    }
+
+    // This is a get property  that returns the product of the values specified
+	//by the range
+    public double Product
+    {
+		get
+		{
+		double product=1;
+        if (deltaValue>0) 
+		{
+			for(double x=startValue; x<=endValue; x+=deltaValue)
+			{
+				product= product*x;
+			}
+		}else if (deltaValue<0)
+		{
+			for(double x=startValue; x>=endValue; x+=deltaValue)
+			{
+				product= product*x;
+			}
+		}
+		
+			return product;
+		}
+    }
+
+    // This is a method that overrides the default ToString method
+    // for the Range class.  This ToString method returns a string
+    // of the form "Ranging from 1.00 to 10.00 in steps of 2.00" where
+    // the values 1.00, 10.00, and 2.00 are replaced with the 
+    // startValue, the endValue, and the deltaValue, respectively.
+    public override string ToString()
+    {
+        return string.Format("Ranging from {0:f2} to {1:f2} in steps of {2:F2}",
+		startValue, endValue, deltaValue);
+    }
+}
+
+// This TestProgram class provides a program entry point for a simple
+// test program that prompts a user for the three fields of the Range
+// class and then outputs the range, the sum of values in the range, 
+// and the product of values in the range.  DO NOT MODIFY THIS CLASS!
+class TestProgram
+{
+    // This is the program entry point for the test program.  DO NOT
+    // MODIFY THIS PROGRAM ENTRY POINT!  No modifications are necessary
+    // to complete this assignment.
+    static void Main()
+    {
+        Range r;
+        double s;
+        double e;
+        double d;
+
+        Console.WriteLine("\nProgramming Assignment 2: Range Class\n");
+
+        Console.Write("Enter a starting value for the range     : ");
+        s = double.Parse(Console.ReadLine());
+
+        Console.Write("Enter an ending value for the range      : ");
+        e = double.Parse(Console.ReadLine());
+
+        Console.Write("Enter a step (delta) value for the range : ");
+        d = double.Parse(Console.ReadLine());
+
+        r = new Range(s, e, d);
+
+        Console.WriteLine();
+        Console.WriteLine(r);
+        Console.WriteLine("Sum of series = {0:F2}", r.Sum());
+        Console.WriteLine("Product of series = {0:F2}", r.Product);
+        Console.WriteLine();
+    }
+}
